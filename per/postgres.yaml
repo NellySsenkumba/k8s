@@ -29,5 +29,6 @@ spec:
                 secretKeyRef:
                   name: per-secret
                   key: password
+
       restartPolicy: Always
       

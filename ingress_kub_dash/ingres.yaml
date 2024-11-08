@@ -2,15 +2,34 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: dashboard-ingress
-  namespace: kubernetes-dashboard
+  namespace: nelly-v1
 spec:
   rules:
-    - host: dashboard.com
+    -
       http:
         paths:
           - backend:
+
               service:
                 name: kubernetes-dashboard
+
                 port:
                   number: 80
-            pathType: /
+            pathType: ImplementationSpecific
+      host: nelly2.com
+
+
+#---
+#apiVersion: networking.k8s.io/v1beta1
+#kind: Ingress
+#metadata:
+#  name: dashboard-ingress
+#  namespace: nelly2.com
+#spec:
+#  rules:
+#    - host: dashboard.com
+#      http:
+#        paths:
+#          - backend:
+#              serviceName: kubernetes-dashboard
+#              servicePort: 80
