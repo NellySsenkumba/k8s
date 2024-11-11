@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
-  namespace: per
+  name: spring-demo-postgres
+  namespace: nelly-v1
   labels:
     app: postgres
 spec:
@@ -17,8 +17,8 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: postgres
-          image: postgres
+        - name: spring-demo-db
+          image: postgres:alpine
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
@@ -27,8 +27,22 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: per-secret
+                  name: spring-demo-db-secret
                   key: password
-
       restartPolicy: Always
-      
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-demo-db
+  namespace: nelly-v1
+
+spec:
+  selector:
+    app: spring-demo-postgres
+  ports:
+    - protocol: TCP
+      port: 5433
+      targetPort: 5432
+

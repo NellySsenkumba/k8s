@@ -23,6 +23,22 @@ spec:
           ports:
             - containerPort: 7100
               protocol: TCP
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: spring-demo-db-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: spring-demo-db-secret
+                  key: password
+            - name: DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: spring-demo-config
+                  key: db_url
       restartPolicy: Always
 
 ---
