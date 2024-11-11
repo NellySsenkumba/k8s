@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-demo
+  namespace: nelly-v1
+  labels:
+    app: spring-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-demo
+  template:
+    metadata:
+      name: spring-demo
+      labels:
+        app: spring-demo
+    spec:
+      containers:
+        - name: spring-demo
+          image: nellyssenkumba/demo-spring-app:1.0.0-beta-no-db
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 7100
+              protocol: TCP
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-demo
+  namespace: nelly-v1
+spec:
+  selector:
+    app: spring-demo
+  ports:
+    - protocol: TCP
+      port: 7100
+      targetPort: 7100
+

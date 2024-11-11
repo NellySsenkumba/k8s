@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spring-demo
+  namespace: nelly-v1
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: nelly-spring.com
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: spring-demo
+                port:
+                  number: 7100
+          - path: /users/
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mongo-express-service
+                port:
+                  number: 8081
+    - host: demo.nelly-spring.com #sub-domain
+      http:
+        paths:
+          - pathType: ImplementationSpecific
+            backend:
+              service:
+                name: spring-demo
+                port:
+                  number: 7100
+
