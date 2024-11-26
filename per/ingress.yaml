@@ -15,13 +15,6 @@ spec:
                 name: spring-demo
                 port:
                   number: 7100
-          - path: /users/
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: mongo-express-service
-                port:
-                  number: 8081
     - host: demo.nelly-spring.com #sub-domain
       http:
         paths:

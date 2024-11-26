@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: title
+  labels:
+    app: title
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: title
+  template:
+    metadata:
+      name: title
+      labels:
+        app: title
+    spec:
+      containers:
+        - name: title
+          image: postgres
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
+
+  serviceName: title
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: title
+spec:
+  selector:
+    app: title
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

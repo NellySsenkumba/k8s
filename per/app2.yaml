@@ -6,7 +6,7 @@ metadata:
   labels:
     app: spring-demo2
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: spring-demo2
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: spring-demo2-db
-          image: postgres:alpine
+          image: postgres
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
@@ -61,9 +61,34 @@ metadata:
   namespace: nelly-v1
 spec:
   selector:
-    app: spring-demo2
+    app: spring-demo
   ports:
     - protocol: TCP
+      name: app
       port: 7101
       targetPort: 7100
+    - port: 5433
+      name: db
+      targetPort: 5432
+      protocol: TCP
 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-demo2-headless
+  namespace: nelly-v1
+spec:
+  clusterIP: None
+  selector:
+    app: spring-demo
+  ports:
+    - protocol: TCP
+      name: app
+      port: 7101
+      targetPort: 7100
+    - port: 5433
+      name: db
+      targetPort: 5432
+      protocol: TCP

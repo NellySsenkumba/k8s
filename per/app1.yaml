@@ -47,6 +47,8 @@ kind: Service
 metadata:
   name: spring-demo
   namespace: nelly-v1
+  labels:
+    app: spring-demo-db
 spec:
   selector:
     app: spring-demo

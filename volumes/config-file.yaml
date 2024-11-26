@@ -1,13 +1,87 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: title
+  name: config-file
 data:
   # kv format
-  key: "value"
-  $actual-config-file$: "name.properties"
+#  key: "value"
+#  $actual-config-file$: "application.properties"
 
   # file format
-  name.properties: |
-    field=value1,value2
-
+  application.properties: |
+    spring.application.name=${app.version}
+    app.version=SC-SAFARIPASS-20240917001
+    app.url=https://safaripassuat.servicecops.com
+    #
+    #
+    spring.profiles.active=dev
+    server.port=7100
+    #
+    #
+    #
+    # Datasource Properties
+    spring.jpa.hibernate.ddl-auto=validate
+    #
+    #
+    spring.jpa.open-in-view=true
+    #
+    #
+    # Mail properties
+    spring.mail.host=smtp.servicecops.com
+    spring.mail.port=25
+    spring.mail.username=servspace@servicecops.com
+    spring.mail.no-reply=noreply@servicecops.com
+    spring.mail.password=Wf&8c436w
+    spring.mail.properties.mail.smtp.auth=true
+    spring.mail.properties.mail.smtp.starttls.enable=true
+    #spring.mail.jndi-name=mail/Session
+    #
+    #
+    #Jwt
+    application.security.jwt.secret-key=25432A462D4A614E645267556B586E3272357538782F413F4428472B4B6250655368566D5971337336763979244226452948404D635166546A576E5A72347537
+    # Access token set to 1 hour (in milliseconds) for web
+    #application.security.jwt.expiration=3600000
+    application.security.jwt.expiration=36000000000
+    # Refresh token set to 2 hours for web
+    application.security.jwt.refresh-token.expiration=7200000
+    #  Access token set to 1 week (in milliseconds) for Mobile
+    application.security.jwt.expiration.mobile=604800000
+    #application.security.jwt.expiration.mobile=60000
+    # Refresh token set to 2 Weeks for mobile
+    application.security.jwt.refresh-token.expiration.mobile=1209600000
+    #
+    #
+    #
+    # GCP settings
+    spring.cloud.gcp.credentials.location=classpath:banded-plateau-321516-006939d9d275.json
+    spring.cloud.gcp.config.project-id=banded-plateau-321516
+    gcp.bucket.name=sc-servspace-bucket
+    #
+    #
+    #
+    #File properties
+    spring.servlet.multipart.max-file-size=10MB
+    spring.servlet.multipart.max-request-size=20MB
+    #
+    #
+    #
+    #Liquibase
+    spring.liquibase.change-log=classpath:liquibase/db.changelog.xml
+    #
+    #
+    #Thymeleafs
+    spring.thymeleaf.check-template-location=false
+    #
+    #
+    #Flutterwave
+    flutterwave.public-key=FLWPUBK_TEST-541f74b0d15921aca34a33feeadc3b93-X
+    flutterwave.secret-key=FLWSECK_TEST-00e30a84fc6d82fb0b8a9223c6b37138-X
+    #
+    #
+    #compression
+    server.compression.enabled=true
+    #
+    #
+    #http2
+    server.http2.enabled=true
+  

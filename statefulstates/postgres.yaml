@@ -1,20 +1,20 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: spring-demo-postgres
+  name: postgres-db
   namespace: nelly-v1
   labels:
-    app: postgres
+    app: postgres-db
 spec:
-  replicas: 1
+  replicas: 9
   selector:
     matchLabels:
-      app: postgres
+      app: postgres-db
   template:
     metadata:
-      name: postgres
+      name: postgres-db
       labels:
-        app: postgres
+        app: postgres-db
     spec:
       containers:
         - name: spring-demo-db
@@ -25,31 +25,24 @@ spec:
               protocol: TCP
           env:
             - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: spring-demo-db-secret
-                  key: password
+              value: "1234"
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: spring-demo-db-secret
-                  key: username
+              value: postgres
             - name: POSTGRES_DB
               value: demo
       restartPolicy: Always
+  serviceName: postgres-svc
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-demo-db
+  name: postgres-svc
   namespace: nelly-v1
-
 spec:
   selector:
-    app: postgres
+    app: postgres-db
   ports:
     - protocol: TCP
-      port: 5433
+      port: 5432
       targetPort: 5432
-

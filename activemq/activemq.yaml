@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+#    kubectl.kubernetes.io/last-applied-configuration: |
+#      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"activemq-app"},"name":"activemq-deployment","namespace":"activemq"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"activemq-app"}},"template":{"metadata":{"labels":{"app":"activemq-app"}},"spec":{"containers":[{"image":"apache/activemq-classic:5.18.3","imagePullPolicy":"IfNotPresent","name":"activemq","ports":[{"containerPort":8161,"protocol":"TCP"},{"containerPort":61616,"protocol":"TCP"},{"containerPort":5672,"protocol":"TCP"},{"containerPort":61613,"protocol":"TCP"},{"containerPort":1883,"protocol":"TCP"}],"readinessProbe":{"exec":{"command":["sh","-c","status=$(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8161); if [ \"$status\" -eq 401 ]; then exit 0; else exit 1; fi\n"]},"initialDelaySeconds":4,"periodSeconds":2},"resources":{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"200m","memory":"500Mi"}},"securityContext":{"runAsUser":0},"volumeMounts":[{"mountPath":"/opt/apache-activemq/conf/jetty-realm.properties","name":"active-creds","subPath":"jetty-realm.properties"},{"mountPath":"/opt/apache-activemq/conf/jetty.xml","name":"jetty-xml","subPath":"jetty.xml"},{"mountPath":"/opt/apache-activemq/data","name":"data"}]}],"nodeSelector":{"category":"activemq"},"serviceAccountName":"activemq-admin","volumes":[{"name":"active-creds","secret":{"secretName":"creds"}},{"name":"data","persistentVolumeClaim":{"claimName":"activemq-data-pv-claim"}},{"configMap":{"name":"jetty.xml"},"name":"jetty-xml"}]}}}}
+  labels:
+    app: activemq-app
+  name: activemq-deployment
+  namespace: activemq
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: activemq-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: activemq-app
+    spec:
+      containers:
+      - image: apache/activemq-classic:5.18.3
+        imagePullPolicy: IfNotPresent
+        name: activemq
+        ports:
+        - containerPort: 8161
+          protocol: TCP
+        - containerPort: 61616
+          protocol: TCP
+        - containerPort: 5672
+          protocol: TCP
+        - containerPort: 61613
+          protocol: TCP
+        - containerPort: 1883
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8161); if [ "$status" -eq 401 ]; then exit 0; else exit 1; fi
+          failureThreshold: 3
+          initialDelaySeconds: 4
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1000Mi
+          requests:
+            cpu: 200m
+            memory: 500Mi
+        securityContext:
+          runAsUser: 0
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/apache-activemq/conf/jetty-realm.properties
+          name: active-creds
+          subPath: jetty-realm.properties
+        - mountPath: /opt/apache-activemq/conf/jetty.xml
+          name: jetty-xml
+          subPath: jetty.xml
+        - mountPath: /opt/apache-activemq/data
+          name: data
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        category: activemq
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: activemq-admin
+      serviceAccountName: activemq-admin
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: active-creds
+        secret:
+          defaultMode: 420
+          secretName: creds
+      - name: data
+        persistentVolumeClaim:
+          claimName: activemq-data-pv-claim
+      - configMap:
+          defaultMode: 420
+          name: jetty.xml
+        name: jetty-xml

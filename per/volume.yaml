@@ -1,15 +1,14 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: v1
+kind: PersistentVolume
 metadata:
-  name: $title$
+  name: spring-db-data
+  namespace: nelly-v1
 spec:
-  template:
-    spec:
-      containers:
-        - name: $title$
-          image: python:latest
-          command: ["python", "-c"]
-          args: ["print('Hello from the Kubernetes job')"]
-      restartPolicy: Never
-  backoffLimit: 4
-  $END$
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /mnt/c/Users/User/Documents/Eng/Sybyl/postgres_data
