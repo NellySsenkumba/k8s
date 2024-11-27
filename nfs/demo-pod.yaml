@@ -16,5 +16,5 @@ spec:
   volumes:
     - name: data
       nfs:
-        server: "10.102.183.220"
+        server: "10.108.27.120"
         path: "/nfs-direct" # "nfs-direct" folder must exist inside "/exports" directory of NFS server
