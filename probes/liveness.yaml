@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveness
+  namespace: probes
+  labels:
+    app: liveness
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: liveness
+  template:
+    metadata:
+      name: liveness
+      labels:
+        app: liveness
+    spec:
+      containers:
+        - name: liveness
+          image: registry.k8s.io/busybox
+          imagePullPolicy: IfNotPresent
+          args:
+            - /bin/sh
+            - -c
+            - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      restartPolicy: Always
+      

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: startup
+  namespace: probes
+  labels:
+    app: startup
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: startup
+  template:
+    metadata:
+      name: startup
+      labels:
+        app: startup
+    spec:
+      containers:
+        - name: startup
+          image: registry.k8s.io/goproxy:0.1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: live-port
+          livenessProbe:
+            tcpSocket:
+              port: live-port
+
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            periodSeconds: 10
+            failureThreshold: 30
+            tcpSocket:
+              port: live-port
+
+
+      
